@@ -14,10 +14,6 @@
 static const char* SEM_KEY_PATH = "/tmp/poste_sem.key";
 
 static key_t get_sem_key(void) {
-    int fd = open(SEM_KEY_PATH, O_RDONLY | O_CREAT, 0666);
-    if (fd == -1) TEST_ERROR(-1, "open key file semafori");
-    close(fd);
-
     key_t k = ftok(SEM_KEY_PATH, 'S');
     if (k == (key_t)-1) TEST_ERROR(-1, "ftok semafori");
     

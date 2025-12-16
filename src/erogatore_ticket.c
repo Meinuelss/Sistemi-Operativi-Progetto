@@ -58,20 +58,13 @@ int main(void) {
                 if (termination_requested || !shm->attivo) break;
                 continue;
             }
-            if (errno == EIDRM || errno == EINVAL) {
-                break;
-            }
+            if (errno == EIDRM || errno == EINVAL) break;
             perror("[Erogatore] msgrcv error");
             break;
         }
 
         int servizio = richiesta.tipo_servizio;
-        
-        if (servizio < 1 || servizio > NUM_SERVIZI) {
-            fprintf(stderr, "[Erogatore] Warning: Servizio %d non valido (PID=%d)\n", 
-                    servizio, (int)richiesta.pid_utente);
-            continue;
-        }
+        if (servizio < 1 || servizio > NUM_SERVIZI) continue;
         
         int indice = servizio - 1;
         pid_t pid_u = (pid_t)richiesta.pid_utente;
@@ -90,10 +83,11 @@ int main(void) {
             continue;
         }
         
+        // --- FIX: Aggiorna SOLO i contatori GIORNALIERI ---
         if (sportelli_disp == 0) {            
             sem_wait_operation(sem_id, SEM_MUTEX, 1);
             shm->servizi_non_completati_oggi[indice]++;
-            shm->totale_servizi_non_completati[indice]++;
+            // RIMOSSO: shm->totale_servizi_non_completati[indice]++; (Doppio conteggio!)
             sem_post_operation(sem_id, SEM_MUTEX, 1);
             
             invia_risposta(msgid, pid_u, ESITO_NON_SERVITO_GIORNO, servizio, giorno_att);
@@ -117,9 +111,10 @@ int main(void) {
         } else {
             fprintf(stderr, "[Erogatore] Coda S%d PIENA! PID %d respinto.\n", servizio, pid_u);
             
+            // --- FIX: Aggiorna SOLO i contatori GIORNALIERI ---
             sem_wait_operation(sem_id, SEM_MUTEX, 1);
             shm->servizi_non_completati_oggi[indice]++;
-            shm->totale_servizi_non_completati[indice]++;
+            // RIMOSSO: shm->totale_servizi_non_completati[indice]++; (Doppio conteggio!)
             sem_post_operation(sem_id, SEM_MUTEX, 1);
             
             invia_risposta(msgid, pid_u, ESITO_NON_SERVITO_GIORNO, servizio, giorno_att);

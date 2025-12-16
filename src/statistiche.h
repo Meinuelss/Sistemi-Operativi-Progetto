@@ -51,7 +51,7 @@
  * @note Le statistiche giornaliere mostrano il rapporto operatori/sportelli
  * @note Le statistiche finali impostano il rapporto a 0/0 (servizio terminato)
  */
-void stampa_statistiche(SharedMemory* shm, int is_final, int motivo_termine);
+void stampa_statistiche(SharedMemory* shm,int sem_id, int is_final);
 
 /**
  * @brief Appende una riga di statistiche al file CSV.

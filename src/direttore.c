@@ -214,7 +214,7 @@ int main(int argc, char** argv) {
 
         raccogli_statistiche_giornaliere(shm);
         printf("[Direttore] Giorno %d completato.\n", shm->giorno);
-        stampa_statistiche(shm, 0, motivo_termine);
+        stampa_statistiche(shm, sem_id, 0);
         resetta_statistiche_giornaliere(shm);
     }
 
@@ -239,7 +239,7 @@ int main(int argc, char** argv) {
                           pids_utenti, num_utenti, 
                           shm->utenti_dinamici, shm->num_utenti_dinamici);
 
-    stampa_statistiche(shm, 1, motivo_termine);
+    stampa_statistiche(shm, sem_id, 1);
 
     rimuovi_coda_messaggi(msg_id);
     rimuovi_semafori(sem_id);

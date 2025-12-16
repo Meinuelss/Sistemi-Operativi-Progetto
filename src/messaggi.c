@@ -10,10 +10,6 @@
 #include <errno.h>
 
 static key_t get_msg_key(void) {
-    int fd = open(MSG_FTOK_PERCORSO, O_RDONLY | O_CREAT, 0666);
-    if (fd == -1) TEST_ERROR(-1, "open message key file");
-    close(fd);
-
     key_t k = ftok(MSG_FTOK_PERCORSO, MSG_FTOK_PROGETTO);
     if (k == (key_t)-1) TEST_ERROR(-1, "ftok messages");
     
